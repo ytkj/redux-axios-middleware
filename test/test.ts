@@ -38,16 +38,16 @@ function handleError(e: AxiosError): HandleError {
 }
 
 const FETCH_MESSAGE: 'FETCH_MESSAGE' = 'FETCH_MESSAGE';
-interface ShowMessage extends Action<typeof FETCH_MESSAGE> {
+interface FetchMessage extends Action<typeof FETCH_MESSAGE> {
     payload: string;
 }
 
 function fetchMessage(
     url: string
-): ThunkAction<Promise<RAAction>, State, void, RAAction|ShowMessage> {
+): ThunkAction<Promise<RAAction>, State, void, RAAction|FetchMessage> {
 
     let thunkAction = async(
-        dispatch: ThunkDispatch<State, void, RAAction|ShowMessage>,
+        dispatch: ThunkDispatch<State, void, RAAction|FetchMessage>,
         getState: () => State
     ): Promise<RAAction> => {
 
@@ -65,7 +65,7 @@ function fetchMessage(
 
 function reducer(
     state: State = new State(),
-    action: Log|HandleError|ShowMessage
+    action: Log|HandleError|FetchMessage
 ) {
     if (!action) return state;
     switch (action.type) {
