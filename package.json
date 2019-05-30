@@ -13,9 +13,9 @@
         "type": "git",
         "url": "git+https://github.com/ytkj/redux-axios-middleware.git"
     },
-    "keywords": [],
+    "keywords": ["redux", "axios", "middleware", "TypeScript"],
     "author": "",
-    "license": "ISC",
+    "license": "MIT",
     "bugs": {
         "url": "https://github.com/ytkj/redux-axios-middleware/issues"
     },
