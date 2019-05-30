@@ -1,7 +1,7 @@
 {
     "name": "@ytkj/redux-axios-middleware",
     "version": "0.0.1",
-    "description": "",
+    "description": "redux middleware with axios ajax calling, powered by TypeScript.",
     "main": "index.js",
     "typings": "src/index.d.ts",
     "scripts": {
