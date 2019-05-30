@@ -12,13 +12,14 @@ This repository is related to npm package [@ytkj/redux-axios-middleware](https:/
     ```typescript
     import { createStore, applyMiddleware } from 'redux';
     import thunkMiddleware from 'redux-thunk';
+    import { AxiosError } from 'axios';
 
     import { raAction, createRAMiddleware, RAAction } from '@ytkj/redux-axios-middleware';
 
     const raMiddleware = createRAMiddleware({
         actionBeforeFetch: { type: 'FOO_ACTION'},
         actionAfterFetch: { type: 'BAR_ACTION'},
-        actionCreatorOnFail: handleError,
+        actionCreatorOnFail: (e: AxiosError) => ({type: 'ERROR', payload: e.response.data}),
     });
     store = createStore(reducer, applyMiddleware(thunkMiddleware, raMiddleware));
     ```
@@ -83,7 +84,7 @@ This repository is related to npm package [@ytkj/redux-axios-middleware](https:/
 
 ### `raAction()`
 
-`action creator` from `RAAction`.
+`action creator` for `RAAction`.
 
 #### argument
 
@@ -102,11 +103,11 @@ This repository is related to npm package [@ytkj/redux-axios-middleware](https:/
 |property|type|description|
 |---|---|---|
 |`url`|`string`|request URL.|
-|`method`|`'GET'|'POST'|'PUT'`|requst HTTP method.|
+|`method`|`'GET'\|'POST'\|'PUT'`|requst HTTP method.|
 |`successActionType`|`any`|`action.type` string.|
 |`requestBody?`|`any`|request body (only for `'POST'` and `'PUT'`).|
 |`requestConfig?`|[`AxiosRequestConfig`](https://github.com/axios/axios#request-config)|request config for `axios`.|
-|`successChainAction?`|`Action|TunkAction|Action[]|ThunkAction[]`|`action` that shold be dispatced after receiving Ajax response only if succeed.|
-|`successChainActionCreator?`|`(payload: any) => Action|ThunkAction`|`action creator` that shold be dispatched after receiving Ajax response only if succeed. response content(`res.data`) will be passed as argument.|
+|`successChainAction?`|`Action\|TunkAction\|Action[]\|ThunkAction[]`|`action` that shold be dispatced after receiving Ajax response only if succeed.|
+|`successChainActionCreator?`|`(payload: any) => Action\|ThunkAction`|`action creator` that shold be dispatched after receiving Ajax response only if succeed. response content(`res.data`) will be passed as argument.|
 
 
