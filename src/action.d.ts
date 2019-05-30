@@ -12,7 +12,7 @@ interface RAActionPayload {
     requestBody?: any;
     requestConfig?: AxiosRequestConfig;
     successChainAction?: Action | TAction | Action[] | TAction[];
-    successChainActionCreator?: (payload: RAActionPayload) => Action | TAction;
+    successChainActionCreator?: (payload: any) => Action | TAction;
 }
 export declare function raAction(payload: RAActionPayload): RAAction;
 export declare function isRAAction(action: Action<any>): action is RAAction;
