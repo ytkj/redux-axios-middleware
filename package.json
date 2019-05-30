@@ -1,0 +1,43 @@
+{
+    "name": "@ytkj/redux-axios-middleware",
+    "version": "0.0.1",
+    "description": "",
+    "main": "index.js",
+    "typings": "src/index.d.ts",
+    "scripts": {
+        "build": "webpack --mode production",
+        "build:dev": "webpack --mode development",
+        "test": "TS_NODE_COMPILER_OPTIONS='{\"module\":\"commonjs\"}' mocha -r ts-node/register test/test.ts"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ytkj/redux-axios-middleware.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/ytkj/redux-axios-middleware/issues"
+    },
+    "homepage": "https://github.com/ytkj/redux-axios-middleware#readme",
+    "devDependencies": {
+        "@types/chai": "^4.1.7",
+        "@types/mocha": "^5.2.6",
+        "@types/redux": "^3.6.0",
+        "@types/redux-logger": "^3.0.7",
+        "@types/redux-thunk": "^2.1.0",
+        "axios": "^0.18.0",
+        "axios-mock-adapter": "^1.16.0",
+        "chai": "^4.2.0",
+        "immutability-helper": "^3.0.0",
+        "mocha": "^6.1.4",
+        "redux-logger": "^3.0.6",
+        "ts-loader": "^6.0.1",
+        "ts-loader-decleration": "^0.10.4",
+        "ts-node": "^8.2.0",
+        "typescript": "^3.5.1",
+        "webpack": "^4.32.2",
+        "webpack-cli": "^3.3.2",
+        "webpack-node-externals": "^1.7.2"
+    }
+}
