@@ -1,6 +1,6 @@
 {
     "name": "@ytkj/redux-axios-middleware",
-    "version": "0.0.1",
+    "version": "0.1.0",
     "description": "redux middleware with axios ajax calling, powered by TypeScript.",
     "main": "index.js",
     "typings": "src/index.d.ts",
@@ -13,7 +13,12 @@
         "type": "git",
         "url": "git+https://github.com/ytkj/redux-axios-middleware.git"
     },
-    "keywords": ["redux", "axios", "middleware", "TypeScript"],
+    "keywords": [
+        "redux",
+        "axios",
+        "middleware",
+        "TypeScript"
+    ],
     "author": "",
     "license": "MIT",
     "bugs": {
