@@ -2,7 +2,7 @@ import { describe, it, beforeEach } from 'mocha';
 import { expect } from 'chai';
 import thunkMiddleware, { ThunkAction, ThunkDispatch }  from 'redux-thunk';
 import { createLogger } from 'redux-logger';
-import { createStore, applyMiddleware, Action, Store } from 'redux';
+import { createStore, applyMiddleware, Action, Store, ActionCreator } from 'redux';
 import { AxiosError } from 'axios';
 import update from 'immutability-helper';
 
@@ -43,7 +43,9 @@ interface FetchMessage extends Action<typeof FETCH_MESSAGE> {
 }
 
 function fetchMessage(
-    url: string
+    url: string,
+    ca: Action|Action[],
+    cac: ActionCreator<Action>|Array<ActionCreator<Action>>
 ): ThunkAction<Promise<RAAction>, State, void, RAAction|FetchMessage> {
 
     let thunkAction = async(
@@ -55,8 +57,8 @@ function fetchMessage(
             url: url,
             method: 'GET',
             successActionType: FETCH_MESSAGE,
-            successChainAction: log('chain-action;'),
-            successChainActionCreator: log,
+            successChainAction: ca,
+            successChainActionCreator: cac,
         }));
     }
 
@@ -94,6 +96,7 @@ describe('basic usage', function() {
         const raMiddleware = createRAMiddleware({
             actionBeforeFetch: log('ajax:start;'),
             actionAfterFetch: log('ajax:finish;'),
+            actionOnFail: log('ajax:fail;'),
             actionCreatorOnFail: handleError,
             axiosClient: axios,
         });
@@ -103,10 +106,10 @@ describe('basic usage', function() {
     describe('ajax success', function() {
 
         beforeEach(function(done) {
-            store.dispatch(fetchMessage(URL_SUCCESS) as any);
+            store.dispatch(fetchMessage(URL_SUCCESS, log('chain-action;'), log) as any);
             setTimeout(() => {
                 done();
-            }, 1);
+            }, 10);
         });
 
         it('actionBeforeFetch', function() {
@@ -138,10 +141,10 @@ describe('basic usage', function() {
     describe('ajax fail', function() {
 
         beforeEach(function(done) {
-            store.dispatch(fetchMessage(URL_APP_ERROR) as any);
+            store.dispatch(fetchMessage(URL_APP_ERROR, log('chain-action;'), log) as any);
             setTimeout(() => {
                 done();
-            }, 1);    
+            }, 10);
         });
 
         it('actionBeforeFetch', function() {
@@ -154,10 +157,102 @@ describe('basic usage', function() {
             expect(s.log).to.have.string('ajax:finish;');
         });
 
+        it('actionOnFail', function() {
+            let s = store.getState();
+            expect(s.log).to.have.string('ajax:fail;');
+        });
+
         it('actionCreatorOnFail', function() {
             let s = store.getState();
             expect(s.errorMessage).to.equal('Fail to Hello World');
         });
+    });
+
+});
+
+describe('array options', function() {
+
+    beforeEach(function() {
+        const raMiddleware = createRAMiddleware({
+            actionBeforeFetch: [log('ajax:start;'), log('ajax:start2;')],
+            actionAfterFetch: [log('ajax:finish;'), log('ajax:finish2;')],
+            actionOnFail: [log('ajax:fail;'), log('ajax:fail2;')],
+            actionCreatorOnFail: [handleError, e => log(`error:${e.response.data};`)],
+            axiosClient: axios,
+        });
+        store = createStore(reducer, applyMiddleware(thunkMiddleware, raMiddleware));
+    });
+
+    describe('ajax success', function() {
+
+        beforeEach(function(done) {
+            let ac = (m: string) => log(`${m}2`);
+            store.dispatch(fetchMessage(URL_SUCCESS, [log('chain-action;'), log('chain-action2;')], [log, ac]) as any);
+            setTimeout(() => {
+                done();
+            }, 10);
+        });
+
+        it('actionBeforeFetch', function() {
+            let s = store.getState();
+            expect(s.log).to.have.string('ajax:start;');
+            expect(s.log).to.have.string('ajax:start2;');
+        });
+
+        it('actionAfterFetch', function() {
+            let s = store.getState();
+            expect(s.log).to.have.string('ajax:finish;');
+            expect(s.log).to.have.string('ajax:finish2;');
+        });
+
+        it('successChainAction', function() {
+            let s = store.getState();
+            expect(s.log).to.have.string('chain-action;');
+            expect(s.log).to.have.string('chain-action2;');
+        });
+
+        it('successChainActionCreator', function() {
+            let s = store.getState();
+            expect(s.log).to.have.string('Hello World');
+            expect(s.log).to.have.string('Hello World2');
+        });
+
+    });
+
+    describe('ajax fail', function() {
+
+        beforeEach(function(done) {
+            let ac = (m: string) => log(`${m}2`);
+            store.dispatch(fetchMessage(URL_APP_ERROR, [log('chain-action;'), log('chain-action2;')], [log, ac]) as any);
+            setTimeout(() => {
+                done();
+            }, 10);
+        });
+
+        it('actionBeforeFetch', function() {
+            let s = store.getState();
+            expect(s.log).to.have.string('ajax:start;');
+            expect(s.log).to.have.string('ajax:start2;');
+        });
+
+        it('actionAfterFetch', function() {
+            let s = store.getState();
+            expect(s.log).to.have.string('ajax:finish;');
+            expect(s.log).to.have.string('ajax:finish2;');
+        });
+
+        it('actionOnFail', function() {
+            let s = store.getState();
+            expect(s.log).to.have.string('ajax:fail;');
+            expect(s.log).to.have.string('ajax:fail2;');
+        });
+
+        it('actionCreatorOnFail', function() {
+            let s = store.getState();
+            expect(s.errorMessage).to.equal('Fail to Hello World');
+            expect(s.log).to.have.string('error:Fail to Hello World;');
+        });
+
     });
 
 });

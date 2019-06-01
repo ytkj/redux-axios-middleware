@@ -1,15 +1,25 @@
-import { Middleware, Action } from 'redux';
+import { Middleware, Action, Dispatch } from 'redux';
 import axios, { AxiosResponse, AxiosError, AxiosInstance } from 'axios';
 
 import { isRAAction } from './action';
 
+type ACOF = (e: AxiosError) => Action;
+
 export interface CreateRAMiddlewareOptions {
-    actionBeforeFetch?: Action<any>;
-    actionAfterFetch?: Action<any>;
-    actionOnFail?: Action<any>;
-    actionCreatorOnFail?: (e: AxiosError) => Action<any>
+    actionBeforeFetch?: Action|Action[];
+    actionAfterFetch?: Action|Action[];
+    actionOnFail?: Action|Action[];
+    actionCreatorOnFail?: ACOF|ACOF[];
     axiosClient?: AxiosInstance;
 }
+
+const superNext = (actionOrArray: Action|Action[], next: Dispatch): void => {
+    if (Array.isArray(actionOrArray)) {
+        actionOrArray.forEach(a => next(a));
+    } else {
+        next(actionOrArray);
+    }
+};
 
 export const createRAMiddleware: (option: CreateRAMiddlewareOptions) => Middleware = option => store => next => async (action: Action<any>) => {
 
@@ -17,7 +27,7 @@ export const createRAMiddleware: (option: CreateRAMiddlewareOptions) => Middlewa
         
         // show loading before ajax
         if (option.actionBeforeFetch) {
-            next(option.actionBeforeFetch);
+            superNext(option.actionBeforeFetch, next);
         }
 
         // ajax
@@ -39,7 +49,7 @@ export const createRAMiddleware: (option: CreateRAMiddlewareOptions) => Middlewa
             });
 
             if (option.actionAfterFetch) {
-                next(option.actionAfterFetch);
+                superNext(option.actionAfterFetch, next);
             }
 
             if (action.successChainAction) {
@@ -51,7 +61,13 @@ export const createRAMiddleware: (option: CreateRAMiddlewareOptions) => Middlewa
             }
 
             if (action.successChainActionCreator) {
-                store.dispatch(action.successChainActionCreator(res.data) as Action);
+                if (Array.isArray(action.successChainActionCreator)) {
+                    action.successChainActionCreator.forEach(ac => {
+                        store.dispatch(ac(res.data) as Action);
+                    });
+                } else {
+                    store.dispatch(action.successChainActionCreator(res.data) as Action);
+                }
             }
 
         } catch(e) {
@@ -59,12 +75,17 @@ export const createRAMiddleware: (option: CreateRAMiddlewareOptions) => Middlewa
             // ajax error
 
             if (option.actionAfterFetch) {
-                next(option.actionAfterFetch);
+                superNext(option.actionAfterFetch, next);
             }
             if (option.actionOnFail) {
-                next(option.actionOnFail);
-            } else if (option.actionCreatorOnFail) {
-                next(option.actionCreatorOnFail(e));
+                superNext(option.actionOnFail, next);
+            }
+            if (option.actionCreatorOnFail) {
+                if (Array.isArray(option.actionCreatorOnFail)) {
+                    option.actionCreatorOnFail.forEach(ac => next(ac(e)));
+                } else {
+                    next(option.actionCreatorOnFail(e));
+                }
             }
         }
     } else {

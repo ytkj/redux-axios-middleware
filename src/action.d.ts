@@ -1,4 +1,4 @@
-import { Action } from 'redux';
+import { Action, ActionCreator } from 'redux';
 import { AxiosRequestConfig } from 'axios';
 import { ThunkAction } from 'redux-thunk';
 export declare const RA_ACTION: '@@redux-axios-action/REDUX_AXIOS_ACTION';
@@ -11,8 +11,8 @@ interface RAActionPayload {
     successActionType: any;
     requestBody?: any;
     requestConfig?: AxiosRequestConfig;
-    successChainAction?: Action | TAction | Action[] | TAction[];
-    successChainActionCreator?: (payload: any) => Action | TAction;
+    successChainAction?: Action | TAction | Array<Action | TAction>;
+    successChainActionCreator?: ActionCreator<Action | TAction> | Array<ActionCreator<Action> | ActionCreator<TAction>>;
 }
 export declare function raAction(payload: RAActionPayload): RAAction;
 export declare function isRAAction(action: Action<any>): action is RAAction;

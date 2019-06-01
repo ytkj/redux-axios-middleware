@@ -1,10 +1,12 @@
 import { Middleware, Action } from 'redux';
 import { AxiosError, AxiosInstance } from 'axios';
+declare type ACOF = (e: AxiosError) => Action;
 export interface CreateRAMiddlewareOptions {
-    actionBeforeFetch?: Action<any>;
-    actionAfterFetch?: Action<any>;
-    actionOnFail?: Action<any>;
-    actionCreatorOnFail?: (e: AxiosError) => Action<any>;
+    actionBeforeFetch?: Action | Action[];
+    actionAfterFetch?: Action | Action[];
+    actionOnFail?: Action | Action[];
+    actionCreatorOnFail?: ACOF | ACOF[];
     axiosClient?: AxiosInstance;
 }
 export declare const createRAMiddleware: (option: CreateRAMiddlewareOptions) => Middleware;
+export {};
