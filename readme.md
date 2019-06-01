@@ -108,6 +108,6 @@ This repository is related to npm package [@ytkj/redux-axios-middleware](https:/
 |`requestBody?`|`any`|request body (only for `'POST'` and `'PUT'`).|
 |`requestConfig?`|[`AxiosRequestConfig`](https://github.com/axios/axios#request-config)|request config for `axios`.|
 |`successChainAction?`|`Action\|TunkAction\|Action[]\|ThunkAction[]`|`action` that shold be dispatced after receiving Ajax response only if succeed.|
-|`successChainActionCreator?`|`ActionCreator<Action\|ThunkAction> \| Array<ActionCreator<Action>|ActionCreator<TunkAction>>`|`action creator` that shold be dispatched after receiving Ajax response only if succeed. response content(`res.data`) will be passed as argument.|
+|`successChainActionCreator?`|`ActionCreator<Action\|ThunkAction> \| Array<ActionCreator<Action>\|ActionCreator<TunkAction>>`|`action creator` that shold be dispatched after receiving Ajax response only if succeed. response content(`res.data`) will be passed as argument.|
 
 
