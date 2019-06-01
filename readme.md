@@ -77,9 +77,9 @@ This repository is related to npm package [@ytkj/redux-axios-middleware](https:/
 
 |property|type|description|
 |---|---|---|
-|`actionBeforeFetch?`|[`Action`](https://redux.js.org/basics/actions)|`action` that should be dispatched before sending Ajax request.|
-|`actionAfterFetch?`|[`Action`](https://redux.js.org/basics/actions)|`action` that should be dispatched after receiving Ajax response, whether success or fail.|
-|`actionCreatorOnFail?`|`(e: AxiosError) => Action`<br/>or</br>[`ActionCreator`](https://redux.js.org/basics/actions#action-creators)|function that shold be called after receiving failure response. [`AxiosError`](https://github.com/axios/axios/blob/master/index.d.ts#L79) object will be passed to this function.|
+|`actionBeforeFetch?`|[`Action\|Action[]`](https://redux.js.org/basics/actions)|`action` that should be dispatched before sending Ajax request.|
+|`actionAfterFetch?`|[`Action\|Action[]`](https://redux.js.org/basics/actions)|`action` that should be dispatched after receiving Ajax response, whether success or fail.|
+|`actionCreatorOnFail?`|`(e: AxiosError) => Action \| Array<(e: AxiosError) => Action>`|function that shold be called after receiving failure response. [`AxiosError`](https://github.com/axios/axios/blob/master/index.d.ts#L79) object will be passed to this function.|
 |`axiosClient?`|[`AxiosInstance`](https://github.com/axios/axios#axios-api)|`axios` instance that shold be used to call Ajax request; default to `axios` global object.|
 
 ### `raAction()`
@@ -108,6 +108,6 @@ This repository is related to npm package [@ytkj/redux-axios-middleware](https:/
 |`requestBody?`|`any`|request body (only for `'POST'` and `'PUT'`).|
 |`requestConfig?`|[`AxiosRequestConfig`](https://github.com/axios/axios#request-config)|request config for `axios`.|
 |`successChainAction?`|`Action\|TunkAction\|Action[]\|ThunkAction[]`|`action` that shold be dispatced after receiving Ajax response only if succeed.|
-|`successChainActionCreator?`|`(payload: any) => Action\|ThunkAction`|`action creator` that shold be dispatched after receiving Ajax response only if succeed. response content(`res.data`) will be passed as argument.|
+|`successChainActionCreator?`|`ActionCreator<Action\|ThunkAction> \| Array<ActionCreator<Action>|ActionCreator<TunkAction>>`|`action creator` that shold be dispatched after receiving Ajax response only if succeed. response content(`res.data`) will be passed as argument.|
 
 
