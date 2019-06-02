@@ -44,8 +44,8 @@ interface FetchMessage extends Action<typeof FETCH_MESSAGE> {
 
 function fetchMessage(
     url: string,
-    ca: Action|Action[],
-    cac: ActionCreator<Action>|Array<ActionCreator<Action>>
+    chainAction: Action|Action[],
+    chainActionCreator: ActionCreator<Action>|Array<ActionCreator<Action>>
 ): ThunkAction<Promise<RAAction>, State, void, RAAction|FetchMessage> {
 
     let thunkAction = async(
@@ -57,8 +57,8 @@ function fetchMessage(
             url: url,
             method: 'GET',
             successActionType: FETCH_MESSAGE,
-            successChainAction: ca,
-            successChainActionCreator: cac,
+            successChainAction: chainAction,
+            successChainActionCreator: chainActionCreator,
         }));
     }
 
